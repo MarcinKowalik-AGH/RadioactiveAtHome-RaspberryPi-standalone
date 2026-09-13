@@ -1,0 +1,8 @@
+# Author: Marcin Kowalik <mkowalik@agh.edu.pl>
+[Unit]
+Description=Radioactive sensor measurement calculator
+After=radioactive.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/flock -w 30 /run/radioactive-recorder.lock /usr/local/sbin/radioactive-recorder

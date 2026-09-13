@@ -1,0 +1,99 @@
+#!/bin/bash
+# Radioactive@Home control/status helper
+# Author: Marcin Kowalik <mkowalik@agh.edu.pl>
+# SPDX-License-Identifier: MIT
+set -euo pipefail
+
+CFG="/opt/radioactive/init_data.xml"
+SERVICE="radioactive.service"
+
+need_root() {
+    if [ "${EUID:-$(id -u)}" -ne 0 ]; then
+        echo "Run through sudo." >&2
+        exit 1
+    fi
+}
+
+set_value() {
+    need_root
+    local key="$1" value="$2"
+    sed -i "s#<$key>[^<]*</$key>#<$key>$value</$key>#" "$CFG"
+    systemctl restart "$SERVICE"
+    sleep 2
+}
+
+case "${1:-status}" in
+status)
+    echo "===== SERVICE ====="
+    systemctl --no-pager --full status "$SERVICE" || true
+    echo
+    echo "===== SYSTEMD STATE ====="
+    systemctl show "$SERVICE" -p ActiveState -p SubState -p NRestarts -p MainPID
+    echo
+    echo "===== CONFIG ====="
+    grep -E '<(buzzer|backlight|radacdebug)>' "$CFG" 2>/dev/null || true
+    echo
+    echo "===== SENSOR ====="
+    lsusb | grep -i '04d8:f6fe' || true
+    echo
+    echo "===== CURRENT RAW BLOCK ====="
+    wc -l /opt/radioactive/data.bin 2>/dev/null || echo "No data.bin yet"
+    tail -5 /opt/radioactive/data.bin 2>/dev/null || true
+    echo
+    echo "===== CALCULATED ====="
+    tail -5 /opt/radioactive/measurements.csv 2>/dev/null || echo "No measurements.csv yet"
+    ;;
+backlight)
+    case "${2:-}" in on) set_value backlight 1;; off) set_value backlight 0;; *) echo "Usage: rahctl backlight on|off"; exit 1;; esac
+    ;;
+buzzer)
+    case "${2:-}" in on) set_value buzzer 1;; off) set_value buzzer 0;; *) echo "Usage: rahctl buzzer on|off"; exit 1;; esac
+    ;;
+debug)
+    case "${2:-}" in on) set_value radacdebug 1;; off) set_value radacdebug 0;; *) echo "Usage: rahctl debug on|off"; exit 1;; esac
+    ;;
+rebuild)
+    need_root
+    systemctl stop radioactive-recorder.timer || true
+    /usr/bin/flock -w 30 /run/radioactive-recorder.lock /usr/local/sbin/radioactive-recorder --rebuild
+    systemctl start radioactive-recorder.timer
+    echo "measurements.csv rebuilt from archived raw blocks + current data.bin"
+    ;;
+restart)
+    need_root
+    systemctl restart "$SERVICE"
+    ;;
+api)
+    if ! systemctl cat sensor-http-api.service >/dev/null 2>&1; then
+        echo "sensor-http-api.service is not installed (optional)."
+        exit 1
+    fi
+    systemctl --no-pager --full status sensor-http-api.service || true
+    echo
+    python3 - <<'PY'
+import json, urllib.request
+print(json.dumps(json.load(urllib.request.urlopen("http://127.0.0.1/radioactive.json", timeout=3)), indent=2))
+PY
+    ;;
+storage)
+    du -sh /opt/radioactive /opt/radioactive/raw-blocks 2>/dev/null || true
+    df -h /
+    journalctl --disk-usage 2>/dev/null || true
+    ;;
+*)
+    cat <<'EOF'
+Radioactive@Home control — Marcin Kowalik <mkowalik@agh.edu.pl>
+
+Usage:
+  rahctl status
+  rahctl backlight on|off
+  rahctl buzzer on|off
+  rahctl debug on|off
+  sudo rahctl rebuild
+  sudo rahctl restart
+  rahctl api
+  rahctl storage
+EOF
+    exit 1
+    ;;
+esac

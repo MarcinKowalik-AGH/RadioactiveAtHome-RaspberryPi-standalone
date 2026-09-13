@@ -1,0 +1,12 @@
+# Author: Marcin Kowalik <mkowalik@agh.edu.pl>
+[Unit]
+Description=Process Radioactive sensor measurements
+
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=1min
+Persistent=true
+Unit=radioactive-recorder.service
+
+[Install]
+WantedBy=timers.target

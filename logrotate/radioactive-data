@@ -1,0 +1,13 @@
+# Author: Marcin Kowalik <mkowalik@agh.edu.pl>
+/opt/radioactive/measurements.csv /opt/radioactive/stderr.txt {
+    monthly
+    rotate 24
+    compress
+    missingok
+    notifempty
+    copytruncate
+    dateext
+    dateformat -%Y%m%d-%H%M%S
+    olddir /opt/radioactive/archive
+    maxsize 5M
+}

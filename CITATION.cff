@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+title: "Radioactive@Home Raspberry Pi standalone revival"
+message: "If you use this preservation project, please cite it using the metadata below."
+type: software
+authors:
+  - family-names: Kowalik
+    given-names: Marcin
+    email: mkowalik@agh.edu.pl
+version: 1.1.0
+date-released: 2026-09-13
+repository-code: "https://github.com/MarcinKowalik-AGH/RadioactiveAtHome-RaspberryPi-standalone"
+license: MIT

@@ -1,0 +1,20 @@
+# Author: Marcin Kowalik <mkowalik@agh.edu.pl>
+[Unit]
+Description=Radioactive@Home v3.01 standalone sensor
+After=local-fs.target
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/radioactive
+ExecStart=/usr/local/sbin/radioactive-runner
+Restart=on-failure
+RestartSec=30
+TimeoutStopSec=15
+KillMode=control-group
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

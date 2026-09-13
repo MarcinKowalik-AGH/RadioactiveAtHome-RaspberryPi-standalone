@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.log
+*.tmp
+*.part
+.DS_Store
+RPI_BOINC_PROJECTS_*.tar.gz
+radac_1.78_armv6l-unknown-linux-gnueabihf
+sensors_raspberry_1.78.xml
+sensors.xml

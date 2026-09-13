@@ -1,0 +1,78 @@
+#!/bin/bash
+# Radioactive@Home standalone persistent runner
+# Author: Marcin Kowalik <mkowalik@agh.edu.pl>
+# Copyright (c) 2026 Marcin Kowalik
+# SPDX-License-Identifier: MIT
+
+set -u
+
+DIR="/opt/radioactive"
+BIN="$DIR/radac_1.78_armv6l-unknown-linux-gnueabihf"
+RECORDER="/usr/local/sbin/radioactive-recorder"
+ARCHIVE="$DIR/raw-blocks"
+LOCK="/run/radioactive-recorder.lock"
+
+BLOCK_SAMPLES="${RADIOACTIVE_BLOCK_SAMPLES:-21}"
+RETRY_SEC="${RADIOACTIVE_RETRY_SEC:-60}"
+
+mkdir -p "$ARCHIVE"
+cd "$DIR" || exit 1
+
+count_records() {
+    [ -f data.bin ] || { echo 0; return; }
+    awk -F',' 'NF == 6 && $1 ~ /^[0-9]+$/ && $2 ~ /^[0-9]+$/ { n++ } END { print n+0 }' data.bin
+}
+
+archive_if_complete() {
+    local count stamp counter target
+    count=$(count_records)
+    [ "$count" -ge "$BLOCK_SAMPLES" ] || return 1
+
+    echo "RADAC: completed block: $count samples"
+
+    if ! /usr/bin/flock -w 30 "$LOCK" "$RECORDER"; then
+        echo "RADAC: ERROR - recorder failed; raw block not archived"
+        return 2
+    fi
+
+    stamp=$(date -u +%Y%m%dT%H%M%SZ)
+    counter=$(tail -1 data.bin | cut -d',' -f2)
+    target="$ARCHIVE/data-${stamp}-counter${counter}.bin"
+
+    mv data.bin "$target"
+    echo "RADAC: archived block: $target"
+    return 0
+}
+
+while true; do
+    archive_if_complete
+    arc_rc=$?
+    if [ "$arc_rc" -eq 0 ]; then
+        sleep 2
+    elif [ "$arc_rc" -eq 2 ]; then
+        sleep "$RETRY_SEC"
+        continue
+    fi
+
+    "$BIN"
+    rc=$?
+
+    archive_if_complete
+    arc_rc=$?
+    if [ "$arc_rc" -eq 0 ]; then
+        sleep 2
+        continue
+    elif [ "$arc_rc" -eq 2 ]; then
+        sleep "$RETRY_SEC"
+        continue
+    fi
+
+    if [ "$rc" -eq 0 ]; then
+        echo "RADAC: clean exit before block completion; retry in ${RETRY_SEC}s"
+        sleep "$RETRY_SEC"
+        continue
+    fi
+
+    echo "RADAC: ERROR - exit code $rc"
+    exit "$rc"
+done
