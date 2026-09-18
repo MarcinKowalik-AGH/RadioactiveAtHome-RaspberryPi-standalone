@@ -10,6 +10,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
+PROJECT_VERSION=$(cat "$ROOT/VERSION" 2>/dev/null || echo "unknown")
 TS=$(date +%Y%m%d_%H%M%S)
 BACKUP="/root/radioactive-backup-$TS"
 mkdir -p "$BACKUP"
@@ -129,6 +130,6 @@ echo "===== RECORDER ====="
 systemctl --no-pager --full status radioactive-recorder.timer || true
 echo
 echo "Installation complete."
-echo "Version: 1.2.0"
+echo "Version: $PROJECT_VERSION"
 echo "Author: Marcin Kowalik <mkowalik@agh.edu.pl>"
 echo "Status: rahctl status"
