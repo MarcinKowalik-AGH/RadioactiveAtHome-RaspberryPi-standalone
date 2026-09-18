@@ -14,7 +14,12 @@ fi
 
 SOURCE="$1"
 TMP=""
-cleanup() { [[ -n "$TMP" && -d "$TMP" ]] && rm -rf "$TMP"; }
+cleanup() {
+    if [[ -n "$TMP" && -d "$TMP" ]]; then
+        rm -rf "$TMP"
+    fi
+    return 0
+}
 trap cleanup EXIT
 
 if [[ -d "$SOURCE" ]]; then
