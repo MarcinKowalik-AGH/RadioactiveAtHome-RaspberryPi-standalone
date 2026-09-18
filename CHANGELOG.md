@@ -2,6 +2,16 @@
 
 Author: **Marcin Kowalik <mkowalik@agh.edu.pl>**
 
+## 1.2.0 — 2026-09-18
+
+- Made fresh ARM32 installation self-contained: no old BOINC archive or second Raspberry Pi is required.
+- Bundled the preserved upstream RADAC 1.78 executable as an XZ-compressed legacy artifact and the matching sensor XML.
+- Added SHA-256 verification of the XZ archive, reconstructed executable and XML before installation.
+- Retained optional import from historical BOINC archives for compatibility.
+- Added explicit third-party provenance/licensing notice separating preserved Radioactive@Home artifacts from the repository MIT license.
+- Included the directory-source importer exit-status fix validated during installation of the second Raspberry Pi.
+
+
 ## 1.1.0 — 2026-09-13
 
 - Added optional shared read-only HTTP API on port 80 with JSON and CSV endpoints.

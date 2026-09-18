@@ -1,10 +1,10 @@
 # Radioactive@Home sensor on Raspberry Pi — standalone preservation
 
-**Version:** `1.1.0`  
+**Version:** `1.2.0`  
 **Author:** **Marcin Kowalik**  
 **E-mail:** **mkowalik@agh.edu.pl**  
 **GitHub:** `MarcinKowalik-AGH`  
-**Validated:** `2026-09-13`
+**Validated:** `2026-09-18`
 
 This project keeps a legacy **Radioactive@Home** USB radiation sensor useful after the original BOINC infrastructure ceased to be a dependable data path. It runs the historical RADAC application locally on Raspberry Pi, supervises its 21-sample work-block lifecycle, preserves raw observations, calculates CPM and an estimated dose rate, and exposes local controls for the detector backlight and buzzer.
 
@@ -34,37 +34,40 @@ logrotate/            calculated-data rotation
 journald/             bounded system journal configuration
 docs/en/              detailed English manual
 docs/pl/              detailed Polish manual
-legacy/               rules for importing original RADAC files
+legacy/               preserved upstream RADAC runtime + optional archive importer
 examples/             raw and calculated data examples
 ```
 
-## Important legacy-file rule
+## Bundled preserved upstream files
 
-The project does **not** redistribute the historical executable or the original sensor XML because their redistribution license has not been verified. Supply them from your own archived BOINC installation.
+Version 1.2.0 is self-contained for the validated ARM32 Raspberry Pi target. The repository includes a byte-preserved, XZ-compressed copy of the historical Radioactive@Home RADAC 1.78 executable and the matching sensor XML under `legacy/upstream/radac-1.78/`.
 
-Known validated SHA-256 values:
+The installer verifies all preserved artifacts before use:
 
 ```text
 radac_1.78_armv6l-unknown-linux-gnueabihf
-966025a8f96726d2a76230fbf1ebe39dc9cc2a597e15f594686f48e96bf75306
+SHA-256: 966025a8f96726d2a76230fbf1ebe39dc9cc2a597e15f594686f48e96bf75306
 
 sensors_raspberry_1.78.xml
-87b4573a291820b5818c201ac148d5e09a2a1fc5f801f3aebecd80f483b3af31
+SHA-256: 87b4573a291820b5818c201ac148d5e09a2a1fc5f801f3aebecd80f483b3af31
 ```
+
+These are preserved third-party upstream artifacts, not authored by Marcin Kowalik and not covered by this repository's MIT license. See `THIRD_PARTY_NOTICE.md`.
 
 ## Fast installation
 
 ```bash
+sudo apt update
+sudo apt install -y git python3 util-linux usbutils logrotate coreutils xz-utils
 git clone https://github.com/MarcinKowalik-AGH/RadioactiveAtHome-RaspberryPi-standalone.git
 cd RadioactiveAtHome-RaspberryPi-standalone
-sudo ./scripts/install.sh /home/pi/RPI_BOINC_PROJECTS_YYYYMMDD_HHMMSS.tar.gz
+sudo ./scripts/install.sh
 ```
 
-Or import first and install afterwards:
+No old BOINC directory, archive or second Raspberry Pi is required. Import from a historical BOINC archive remains supported as an optional compatibility path:
 
 ```bash
-sudo ./scripts/import_legacy_files.sh /path/to/archive-or-extracted-directory
-sudo ./scripts/install.sh
+sudo ./scripts/install.sh /path/to/RPI_BOINC_PROJECTS_*.tar.gz
 ```
 
 ## Daily operation
@@ -147,4 +150,6 @@ E-mail: **mkowalik@agh.edu.pl**
 
 ## License
 
-Original code in this repository: MIT. The legacy RADAC executable and original sensor XML are excluded from this license and are not redistributed.
+Original code and documentation authored for this repository: MIT.
+
+The preserved historical Radioactive@Home RADAC executable and sensor XML under `legacy/upstream/` are third-party upstream artifacts and are excluded from the MIT grant. Their provenance and currently verified licensing information are documented in `THIRD_PARTY_NOTICE.md`.

@@ -1,12 +1,9 @@
-# Legacy files
+# Legacy / upstream Radioactive@Home artifacts
 
-Author of this preservation documentation: **Marcin Kowalik <mkowalik@agh.edu.pl>**.
+Version 1.2.0 keeps the validated historical runtime files needed by RADAC in `legacy/upstream/radac-1.78/`, so a fresh installation no longer depends on an old BOINC directory.
 
-The repository intentionally does not contain:
+The preserved executable is stored XZ-compressed. The installer verifies the compressed artifact, decompresses it, verifies the original executable SHA-256, and only then installs it.
 
-```text
-radac_1.78_armv6l-unknown-linux-gnueabihf
-sensors_raspberry_1.78.xml
-```
+The old `scripts/import_legacy_files.sh` path is retained for users who prefer to supply their own archived BOINC project files.
 
-Use `scripts/import_legacy_files.sh` with your own archived BOINC project directory or tar.gz. The importer requires the exact SHA-256 values documented in the root README.
+See `THIRD_PARTY_NOTICE.md` for provenance and licensing boundaries.

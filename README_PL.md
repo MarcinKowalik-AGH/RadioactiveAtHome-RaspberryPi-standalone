@@ -1,10 +1,10 @@
 # Radioactive@Home na Raspberry Pi — samodzielne zachowanie i eksploatacja
 
-**Wersja:** `1.1.0`  
+**Wersja:** `1.2.0`  
 **Autor:** **Marcin Kowalik**  
 **E-mail:** **mkowalik@agh.edu.pl**  
 **GitHub:** `MarcinKowalik-AGH`  
-**Walidacja na sprzęcie:** `2026-09-13`
+**Walidacja na sprzęcie:** `2026-09-18`
 
 Projekt pozwala dalej używać starego czujnika **Radioactive@Home** bez działającej infrastruktury BOINC. Historyczny program RADAC pracuje lokalnie na Raspberry Pi, a dodatkowe skrypty obsługują jego cykl 21-próbkowych bloków, zapisują dane źródłowe, obliczają CPM i szacowane µSv/h oraz pozwalają sterować podświetleniem i buzzerem.
 
@@ -38,13 +38,19 @@ hardware 3.01 / 0x0301 / 769
 
 ## Instalacja skrócona
 
+Od wersji 1.2.0 repozytorium jest samowystarczalne dla zweryfikowanego Raspberry Pi ARM32. Zawiera zachowaną historyczną binarkę RADAC 1.78 w postaci XZ oraz odpowiadający jej `sensors_raspberry_1.78.xml`.
+
 ```bash
+sudo apt update
+sudo apt install -y git python3 util-linux usbutils logrotate coreutils xz-utils
 git clone https://github.com/MarcinKowalik-AGH/RadioactiveAtHome-RaspberryPi-standalone.git
 cd RadioactiveAtHome-RaspberryPi-standalone
-sudo ./scripts/install.sh /home/pi/RPI_BOINC_PROJECTS_YYYYMMDD_HHMMSS.tar.gz
+sudo ./scripts/install.sh
 ```
 
-Repozytorium **nie zawiera** starego `radac_1.78...` ani oryginalnego `sensors_raspberry_1.78.xml`. Instalator/importer pobiera je wyłącznie z własnego archiwum użytkownika i sprawdza SHA-256.
+Nie jest już potrzebne stare archiwum BOINC ani kopiowanie plików z innego Raspberry Pi. Instalator przed użyciem sprawdza SHA-256 obu zachowanych artefaktów. Import własnego starego archiwum pozostaje opcjonalnie obsługiwany.
+
+Zachowane pliki RADAC/XML są artefaktami upstream Radioactive@Home, nie są autorstwa Marcina Kowalika i nie obejmuje ich licencja MIT tego repozytorium. Szczegóły: `THIRD_PARTY_NOTICE.md`.
 
 ## Sterowanie
 
@@ -109,3 +115,8 @@ Szczegóły: [`docs/pl/HTTP_API_PL.md`](docs/pl/HTTP_API_PL.md).
 
 **Marcin Kowalik**  
 **mkowalik@agh.edu.pl**
+
+
+## Licencja
+
+Kod i dokumentacja utworzone w tym repozytorium: MIT. Zachowane pliki upstream Radioactive@Home w `legacy/upstream/` są wyłączone z licencji MIT; szczegóły i pochodzenie opisuje `THIRD_PARTY_NOTICE.md`.
