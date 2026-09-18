@@ -2,6 +2,15 @@
 
 Author: **Marcin Kowalik <mkowalik@agh.edu.pl>**
 
+## 1.2.1 — 2026-09-18
+
+- Updated shared HTTP API to version 1.1.
+- Radioactive top-level CPM/dose keep the latest valid calculated value during reset/baseline rows while current status remains explicit.
+- Added `measurement_timestamp_utc`, `using_last_valid`, `current` and `latest_valid` provenance fields.
+- Added fallback to rotated `measurements.csv-*` archives.
+- Updated CSV endpoints with measurement timestamp and last-valid flag.
+
+
 ## 1.2.0 — 2026-09-18
 
 - Made fresh ARM32 installation self-contained: no old BOINC archive or second Raspberry Pi is required.

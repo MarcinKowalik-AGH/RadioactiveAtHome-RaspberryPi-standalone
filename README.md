@@ -1,6 +1,6 @@
 # Radioactive@Home sensor on Raspberry Pi — standalone preservation
 
-**Version:** `1.2.0`  
+**Version:** `1.2.1`  
 **Author:** **Marcin Kowalik**  
 **E-mail:** **mkowalik@agh.edu.pl**  
 **GitHub:** `MarcinKowalik-AGH`  
@@ -134,7 +134,7 @@ Install it separately so the core detector setup does not claim port 80 automati
 sudo ./integration/http-api/install.sh
 ```
 
-The API runs as `www-data`, receives only `CAP_NET_BIND_SERVICE`, suppresses per-request logging, and does not create another sensor-data log. It was validated from macOS against the Raspberry Pi on 2026-09-13. Do not forward this unauthenticated port directly from the public Internet.
+API 1.1 keeps the current Radioactive recorder status while exposing the latest valid CPM/dose during reset/baseline rows, with explicit provenance fields. The API runs as `www-data`, receives only `CAP_NET_BIND_SERVICE`, suppresses per-request logging, and does not create another sensor-data log. It was validated from macOS against the Raspberry Pi on 2026-09-13. Do not forward this unauthenticated port directly from the public Internet.
 
 See [`docs/en/HTTP_API.md`](docs/en/HTTP_API.md).
 

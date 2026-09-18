@@ -1,6 +1,6 @@
 # Radioactive@Home na Raspberry Pi — samodzielne zachowanie i eksploatacja
 
-**Wersja:** `1.2.0`  
+**Wersja:** `1.2.1`  
 **Autor:** **Marcin Kowalik**  
 **E-mail:** **mkowalik@agh.edu.pl**  
 **GitHub:** `MarcinKowalik-AGH`  
@@ -107,7 +107,7 @@ Instaluje się go osobno, aby podstawowa instalacja sensora nie zajmowała autom
 sudo ./integration/http-api/install.sh
 ```
 
-API działa jako `www-data`, ma tylko `CAP_NET_BIND_SERVICE`, nie loguje każdego żądania i nie tworzy dodatkowego logu pomiarowego. Zostało zweryfikowane 13.09.2026 również z komputera macOS w LAN. Nie należy przekierowywać tego nieuwierzytelnionego portu bezpośrednio z Internetu.
+API 1.1 zachowuje bieżący status recordera Radioactive, a przy `reset/baseline` podaje ostatnie prawidłowe CPM/µSv/h wraz z polami określającymi pochodzenie wartości. API działa jako `www-data`, ma tylko `CAP_NET_BIND_SERVICE`, nie loguje każdego żądania i nie tworzy dodatkowego logu pomiarowego. Zostało zweryfikowane 13.09.2026 również z komputera macOS w LAN. Nie należy przekierowywać tego nieuwierzytelnionego portu bezpośrednio z Internetu.
 
 Szczegóły: [`docs/pl/HTTP_API_PL.md`](docs/pl/HTTP_API_PL.md).
 

@@ -1,5 +1,5 @@
 Project: RadioactiveAtHome-RaspberryPi-standalone
-Version: 1.2.0
+Version: 1.2.1
 Author: Marcin Kowalik
 E-mail: mkowalik@agh.edu.pl
 GitHub account: MarcinKowalik-AGH
