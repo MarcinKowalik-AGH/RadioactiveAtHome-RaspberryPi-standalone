@@ -1,6 +1,6 @@
 # Legacy / upstream Radioactive@Home artifacts
 
-Version 1.2.0 keeps the validated historical runtime files needed by RADAC in `legacy/upstream/radac-1.78/`, so a fresh installation no longer depends on an old BOINC directory.
+Version 1.2.1 keeps the validated historical runtime files needed by RADAC in `legacy/upstream/radac-1.78/`, so a fresh installation no longer depends on an old BOINC directory.
 
 The preserved executable is stored XZ-compressed. The installer verifies the compressed artifact, decompresses it, verifies the original executable SHA-256, and only then installs it.
 
