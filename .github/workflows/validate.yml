@@ -1,0 +1,26 @@
+name: Validate
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Python syntax
+        run: |
+          python3 -m py_compile src/radioactive-recorder.py integration/http-api/sensor-http-api.py
+      - name: Shell syntax
+        run: |
+          bash -n src/radioactive-runner
+          bash -n scripts/*.sh
+          bash -n scripts/rahctl
+          bash -n integration/http-api/*.sh
+      - name: Metadata consistency
+        run: |
+          test "$(tr -d '\n' < VERSION)" = "1.2.1"
+          grep -q '^version: 1.2.1$' CITATION.cff
+          grep -q '^Version: 1.2.1$' PROJECT_INFO.txt
+          grep -q '\*\*Version:\*\* `1.2.1`' README.md
